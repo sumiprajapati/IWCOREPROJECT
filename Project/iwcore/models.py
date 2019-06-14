@@ -1,5 +1,5 @@
 from django.contrib.auth.base_user import BaseUserManager
-from django.contrib.auth.models import AbstractBaseUser, PermissionsMixin
+from django.contrib.auth.models import AbstractBaseUser, Group, PermissionsMixin
 from django.db import models
 
 class UserManager(BaseUserManager):
@@ -61,19 +61,20 @@ class UserDetail(models.Model):
     contact = models.CharField(null=True, blank=True, max_length=220)
     location = models.CharField(null=True, blank=True, max_length=250)
     position = models.CharField(null=True, blank=True, max_length=250)
+    work = models.CharField(null=True, blank=True, max_length=250)
     cv = models.FileField(upload_to='cv/', null=True, default="No image uploaded", blank=True)
 
     def __str__(self):
-        return self.contact
+        return  '%s: %s' % ('Email',self.user.email)
 
 class Partner(models.Model):
-    partner_name = models.CharField(max_length=250)
+    partner_name=models.CharField(max_length=250)
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
-    detail = models.CharField(null=True, blank=True, max_length=250)
-    project_file = models.FileField(upload_to='file/', null=True, default="No image uploaded", blank=True)
+    detail = models.CharField(null=True,blank=True,max_length=250)
+    project_file=models.FileField(upload_to='file/', null=True, default="No image uploaded", blank=True)
 
     def __str__(self):
-        return self.partner_name
+        return '%s: %s' % ('Partner Name', self.partner_name)
 
 
 
@@ -83,7 +84,8 @@ class Project(models.Model):
     theme = models.CharField(null=True, blank=True, max_length=250)
 
     def __str__(self):
-        return self.project_name
+        return '%s: %s' % ('project_name', self.project_name)
+
 
 class ProjectDetail(models.Model):
     project = models.OneToOneField(Project, on_delete=models.CASCADE)
@@ -100,17 +102,26 @@ class ProjectDetail(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
 
+    def __str__(self):
+        return '%s: %s' % ('Project Name', self.project.project_name)
+
+
 class ProjectManager(models.Model):
     user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE)
     project_detail = models.ForeignKey(ProjectDetail, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return '%s: %s' % ('ProjectManger Email', self.user.email)
+
 
 
 class Developer(models.Model):
     user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE)
     project_detail = models.ForeignKey(ProjectDetail, on_delete=models.CASCADE)
 
-
     def __str__(self):
-        return self.project_detail
+        return '%s: %s' % ('ProjectManger Email', self.user.email)
+
+
 
 
