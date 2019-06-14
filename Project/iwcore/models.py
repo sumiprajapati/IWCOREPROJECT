@@ -68,10 +68,10 @@ class UserDetail(models.Model):
         return  '%s: %s' % ('Email',self.user.email)
 
 class Partner(models.Model):
-    partner_name=models.CharField(max_length=250)
+    partner_name = models.CharField(max_length=250)
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
     detail = models.CharField(null=True,blank=True,max_length=250)
-    project_file=models.FileField(upload_to='file/', null=True, default="No image uploaded", blank=True)
+    project_file = models.FileField(upload_to='file/', null=True, default="No image uploaded", blank=True)
 
     def __str__(self):
         return '%s: %s' % ('Partner Name', self.partner_name)
