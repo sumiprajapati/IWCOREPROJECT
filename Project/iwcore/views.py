@@ -1,7 +1,6 @@
 from iwcore.models import MyUser, UserDetail, Partner, Project, ProjectDetail, ProjectManager, Developer
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
-
 from iwcore.models import MyUser, UserDetail
 from rest_framework import viewsets
 from rest_framework.response import Response
@@ -42,7 +41,7 @@ class UserDetailViewSet(viewsets.ModelViewSet):
 
 
 class PartnerViewSet(viewsets.ModelViewSet):
-    queryset = Partner.objects.all()
+    queryset = Partner.objects.filter(user__groups='1')
     serializer_class = PartnerReadSerializer
 
 
@@ -57,10 +56,10 @@ class ProjectDetailViewSet(viewsets.ModelViewSet):
 
 
 class ProjectManagerViewSet(viewsets.ModelViewSet):
-    queryset = ProjectManager.objects.all()
+    queryset = ProjectManager.objects.filter(user_detail__user__groups='3')
     serializer_class = ProjectManagerReadSerializer
 
 
 class DeveloperViewset(viewsets.ModelViewSet):
-    queryset = Developer.objects.all()
+    queryset = Developer.objects.filter(user_detail__user__groups='2')
     serializer_class = DeveloperReadSerializer
