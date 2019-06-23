@@ -65,10 +65,10 @@ class UserDetail(models.Model):
     cv = models.FileField(upload_to='cv/', null=True, default="No image uploaded", blank=True)
 
     def __str__(self):
-        return  '%s: %s' % ('Email',self.user.email)
+        return '%s: %s' % ('Email',self.user.email)
 
 class Partner(models.Model):
-    partner_name = models.CharField(max_length=250)
+    partner_name = models.CharField(max_length=250,null=True,blank=True)
     user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
     detail = models.CharField(null=True,blank=True,max_length=250)
     project_file = models.FileField(upload_to='file/', null=True, default="No image uploaded", blank=True)
@@ -78,17 +78,30 @@ class Partner(models.Model):
 
 
 
-class Project(models.Model):
-    partner = models.ForeignKey(Partner, on_delete=models.CASCADE)
-    project_name = models.CharField(null=True, blank=True, max_length=250)
-    theme = models.CharField(null=True, blank=True, max_length=250)
+class ProjectManager(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
+
 
     def __str__(self):
-        return '%s: %s' % ('project_name', self.project_name)
+        return '%s: %s' % ('ProjectManger Email', self.user.email)
 
 
-class ProjectDetail(models.Model):
-    project = models.OneToOneField(Project, on_delete=models.CASCADE)
+
+class Developer(models.Model):
+    user = models.OneToOneField(MyUser, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return '%s: %s' % ('Developer Email', self.user.email)
+
+
+
+class Project(models.Model):
+    partner = models.ForeignKey(Partner, on_delete=models.CASCADE, null=True, blank=True)
+    project_manager = models.ForeignKey(ProjectManager, on_delete=models.CASCADE)
+    developer = models.ManyToManyField(Developer, related_name='developers')
+    project_name = models.CharField(null=True, blank=True, max_length=250)
+    theme = models.CharField(null=True, blank=True, max_length=250)
     CHOICES = (
         ('ONGOING', 'ongoing'),
         ('COMPLETED', 'completed'),
@@ -103,25 +116,5 @@ class ProjectDetail(models.Model):
     end_date = models.DateField()
 
     def __str__(self):
-        return '%s: %s' % ('Project Name', self.project.project_name)
-
-
-class ProjectManager(models.Model):
-    user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE)
-    project_detail = models.ForeignKey(ProjectDetail, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '%s: %s' % ('ProjectManger Email', self.user.email)
-
-
-
-class Developer(models.Model):
-    user_detail = models.OneToOneField(UserDetail, on_delete=models.CASCADE)
-    project_detail = models.ForeignKey(ProjectDetail, on_delete=models.CASCADE)
-
-    def __str__(self):
-        return '%s: %s' % ('ProjectManger Email', self.user.email)
-
-
-
+        return '%s: %s' % ('Project Name', self.project_name)
 
